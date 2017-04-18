@@ -1,0 +1,271 @@
+Below are the solutions to <a href="http://r-exercises.com/YEAR/MONTH/DAY/TITLE/">these</a> exercises on TOPIC.
+
+
+<div class="chunk" id="unnamed-chunk-1"><div class="rcode"><div class="source"><pre class="knitr r"><span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 1    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl kwd">library</span><span class="hl std">(httr)</span>
+<span class="hl std">path</span> <span class="hl kwb">&lt;-</span> <span class="hl str">&quot;/v1/pubticker/btcusd&quot;</span>
+<span class="hl std">url</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">modify_url</span><span class="hl std">(</span><span class="hl str">&quot;https://api.bitfinex.com&quot;</span><span class="hl std">,</span> <span class="hl kwc">path</span> <span class="hl std">= path)</span>
+<span class="hl std">resp</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">GET</span><span class="hl std">(url)</span>
+
+
+
+
+
+
+<span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 2    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl kwd">http_type</span><span class="hl std">(resp)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## [1] &quot;application/json&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 3    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl std">parsed</span> <span class="hl kwb">&lt;-</span> <span class="hl std">jsonlite</span><span class="hl opt">::</span><span class="hl kwd">fromJSON</span><span class="hl std">(</span><span class="hl kwd">content</span><span class="hl std">(resp,</span> <span class="hl str">&quot;text&quot;</span><span class="hl std">),</span> <span class="hl kwc">simplifyVector</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+<span class="hl std">parsed</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## $mid
+## [1] &quot;1047.55&quot;
+## 
+## $bid
+## [1] &quot;1047.4&quot;
+## 
+## $ask
+## [1] &quot;1047.7&quot;
+## 
+## $last_price
+## [1] &quot;1047.5&quot;
+## 
+## $low
+## [1] &quot;1023.7&quot;
+## 
+## $high
+## [1] &quot;1047.6&quot;
+## 
+## $volume
+## [1] &quot;11182.97794578&quot;
+## 
+## $timestamp
+## [1] &quot;1487326108.205764944&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 4    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl std">data</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">structure</span><span class="hl std">(</span>
+    <span class="hl kwd">list</span><span class="hl std">(</span>
+      <span class="hl kwc">content</span> <span class="hl std">= parsed,</span>
+      <span class="hl kwc">path</span> <span class="hl std">= path,</span>
+      <span class="hl kwc">response</span> <span class="hl std">= resp</span>
+    <span class="hl std">),</span>
+    <span class="hl kwc">class</span> <span class="hl std">=</span> <span class="hl str">&quot;bitfinex_api&quot;</span>
+  <span class="hl std">)</span>
+<span class="hl std">data</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## &lt;BitFinex /v1/pubticker/btcusd&gt;
+## List of 8
+##  $ mid       : chr &quot;1047.55&quot;
+##  $ bid       : chr &quot;1047.4&quot;
+##  $ ask       : chr &quot;1047.7&quot;
+##  $ last_price: chr &quot;1047.5&quot;
+##  $ low       : chr &quot;1023.7&quot;
+##  $ high      : chr &quot;1047.6&quot;
+##  $ volume    : chr &quot;11182.97794578&quot;
+##  $ timestamp : chr &quot;1487326108.205764944&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 5    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl std">print.bitfinex_api</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">x</span><span class="hl std">,</span> <span class="hl kwc">...</span><span class="hl std">) {</span>
+  <span class="hl kwd">cat</span><span class="hl std">(</span><span class="hl str">&quot;&lt;BitFinex &quot;</span><span class="hl std">, x</span><span class="hl opt">$</span><span class="hl std">path,</span> <span class="hl str">&quot;&gt;\n&quot;</span><span class="hl std">,</span> <span class="hl kwc">sep</span> <span class="hl std">=</span> <span class="hl str">&quot;&quot;</span><span class="hl std">)</span>
+  <span class="hl kwd">str</span><span class="hl std">(x</span><span class="hl opt">$</span><span class="hl std">content)</span>
+  <span class="hl kwd">invisible</span><span class="hl std">(x)</span>
+<span class="hl std">}</span>
+
+
+
+
+<span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 6    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl std">bitfinex_api</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">path</span><span class="hl std">) {</span>
+  <span class="hl std">url</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">modify_url</span><span class="hl std">(</span><span class="hl str">&quot;https://api.bitfinex.com&quot;</span><span class="hl std">,</span> <span class="hl kwc">path</span> <span class="hl std">= path)</span>
+
+  <span class="hl std">resp</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">GET</span><span class="hl std">(url)</span>
+  <span class="hl kwa">if</span> <span class="hl std">(</span><span class="hl kwd">http_type</span><span class="hl std">(resp)</span> <span class="hl opt">!=</span> <span class="hl str">&quot;application/json&quot;</span><span class="hl std">) {</span>
+    <span class="hl kwd">stop</span><span class="hl std">(</span><span class="hl str">&quot;API did not return json&quot;</span><span class="hl std">,</span> <span class="hl kwc">call.</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+  <span class="hl std">}</span>
+
+  <span class="hl std">parsed</span> <span class="hl kwb">&lt;-</span> <span class="hl std">jsonlite</span><span class="hl opt">::</span><span class="hl kwd">fromJSON</span><span class="hl std">(</span><span class="hl kwd">content</span><span class="hl std">(resp,</span> <span class="hl str">&quot;text&quot;</span><span class="hl std">),</span> <span class="hl kwc">simplifyVector</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+
+  <span class="hl kwd">structure</span><span class="hl std">(</span>
+    <span class="hl kwd">list</span><span class="hl std">(</span>
+      <span class="hl kwc">content</span> <span class="hl std">= parsed,</span>
+      <span class="hl kwc">path</span> <span class="hl std">= path,</span>
+      <span class="hl kwc">response</span> <span class="hl std">= resp</span>
+    <span class="hl std">),</span>
+    <span class="hl kwc">class</span> <span class="hl std">=</span> <span class="hl str">&quot;bitfinex_api&quot;</span>
+  <span class="hl std">)</span>
+<span class="hl std">}</span>
+<span class="hl kwd">bitfinex_api</span><span class="hl std">(</span><span class="hl str">&quot;/v1/pubticker/btcusd&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## &lt;BitFinex /v1/pubticker/btcusd&gt;
+## List of 8
+##  $ mid       : chr &quot;1047.55&quot;
+##  $ bid       : chr &quot;1047.4&quot;
+##  $ ask       : chr &quot;1047.7&quot;
+##  $ last_price: chr &quot;1047.5&quot;
+##  $ low       : chr &quot;1023.7&quot;
+##  $ high      : chr &quot;1047.6&quot;
+##  $ volume    : chr &quot;11182.97794578&quot;
+##  $ timestamp : chr &quot;1487326108.949317241&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 7    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl kwd">bitfinex_api</span><span class="hl std">(</span><span class="hl str">&quot;/v1/pubticker/btcusb&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## &lt;BitFinex /v1/pubticker/btcusb&gt;
+## List of 1
+##  $ message: chr &quot;Unknown symbol&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">bitfinex_api</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">path</span><span class="hl std">) {</span>
+  <span class="hl std">url</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">modify_url</span><span class="hl std">(</span><span class="hl str">&quot;https://api.bitfinex.com&quot;</span><span class="hl std">,</span> <span class="hl kwc">path</span> <span class="hl std">= path)</span>
+
+  <span class="hl std">resp</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">GET</span><span class="hl std">(url)</span>
+  <span class="hl kwa">if</span> <span class="hl std">(</span><span class="hl kwd">http_type</span><span class="hl std">(resp)</span> <span class="hl opt">!=</span> <span class="hl str">&quot;application/json&quot;</span><span class="hl std">) {</span>
+    <span class="hl kwd">stop</span><span class="hl std">(</span><span class="hl str">&quot;API did not return json&quot;</span><span class="hl std">,</span> <span class="hl kwc">call.</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+  <span class="hl std">}</span>
+
+  <span class="hl std">parsed</span> <span class="hl kwb">&lt;-</span> <span class="hl std">jsonlite</span><span class="hl opt">::</span><span class="hl kwd">fromJSON</span><span class="hl std">(</span><span class="hl kwd">content</span><span class="hl std">(resp,</span> <span class="hl str">&quot;text&quot;</span><span class="hl std">),</span> <span class="hl kwc">simplifyVector</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+
+  <span class="hl kwa">if</span> <span class="hl std">(</span><span class="hl kwd">http_error</span><span class="hl std">(resp)) {</span>
+    <span class="hl kwd">stop</span><span class="hl std">(</span>
+      <span class="hl kwd">sprintf</span><span class="hl std">(</span>
+        <span class="hl str">&quot;BitFinex API request failed [%s]\n%s&quot;</span><span class="hl std">,</span>
+        <span class="hl kwd">status_code</span><span class="hl std">(resp),</span>
+        <span class="hl std">parsed</span><span class="hl opt">$</span><span class="hl std">message</span>
+      <span class="hl std">),</span>
+      <span class="hl kwc">call.</span> <span class="hl std">=</span> <span class="hl num">FALSE</span>
+    <span class="hl std">)</span>
+  <span class="hl std">}</span>
+
+  <span class="hl kwd">structure</span><span class="hl std">(</span>
+    <span class="hl kwd">list</span><span class="hl std">(</span>
+      <span class="hl kwc">content</span> <span class="hl std">= parsed,</span>
+      <span class="hl kwc">path</span> <span class="hl std">= path,</span>
+      <span class="hl kwc">response</span> <span class="hl std">= resp</span>
+    <span class="hl std">),</span>
+    <span class="hl kwc">class</span> <span class="hl std">=</span> <span class="hl str">&quot;bitfinex_api&quot;</span>
+  <span class="hl std">)</span>
+<span class="hl std">}</span>
+<span class="hl kwd">bitfinex_api</span><span class="hl std">(</span><span class="hl str">&quot;/v1/pubticker/btcusb&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="error"><pre class="knitr r">## Error: BitFinex API request failed [400]
+## Unknown symbol
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 8    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl std">ua</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">user_agent</span><span class="hl std">(</span><span class="hl str">&quot;my_user_agent&quot;</span><span class="hl std">)</span>
+<span class="hl std">ua</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## &lt;request&gt;
+## Options:
+## * useragent: my_user_agent
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl std">bitfinex_api</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">path</span><span class="hl std">) {</span>
+  <span class="hl std">url</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">modify_url</span><span class="hl std">(</span><span class="hl str">&quot;https://api.bitfinex.com&quot;</span><span class="hl std">,</span> <span class="hl kwc">path</span> <span class="hl std">= path)</span>
+
+  <span class="hl std">resp</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">GET</span><span class="hl std">(url, ua)</span>
+  <span class="hl kwa">if</span> <span class="hl std">(</span><span class="hl kwd">http_type</span><span class="hl std">(resp)</span> <span class="hl opt">!=</span> <span class="hl str">&quot;application/json&quot;</span><span class="hl std">) {</span>
+    <span class="hl kwd">stop</span><span class="hl std">(</span><span class="hl str">&quot;API did not return json&quot;</span><span class="hl std">,</span> <span class="hl kwc">call.</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+  <span class="hl std">}</span>
+
+  <span class="hl std">parsed</span> <span class="hl kwb">&lt;-</span> <span class="hl std">jsonlite</span><span class="hl opt">::</span><span class="hl kwd">fromJSON</span><span class="hl std">(</span><span class="hl kwd">content</span><span class="hl std">(resp,</span> <span class="hl str">&quot;text&quot;</span><span class="hl std">),</span> <span class="hl kwc">simplifyVector</span> <span class="hl std">=</span> <span class="hl num">FALSE</span><span class="hl std">)</span>
+
+  <span class="hl kwa">if</span> <span class="hl std">(</span><span class="hl kwd">status_code</span><span class="hl std">(resp)</span> <span class="hl opt">!=</span> <span class="hl num">200</span><span class="hl std">) {</span>
+    <span class="hl kwd">stop</span><span class="hl std">(</span>
+      <span class="hl kwd">sprintf</span><span class="hl std">(</span>
+        <span class="hl str">&quot;BitFinex API request failed [%s]\n%s&quot;</span><span class="hl std">,</span>
+        <span class="hl kwd">status_code</span><span class="hl std">(resp),</span>
+        <span class="hl std">parsed</span><span class="hl opt">$</span><span class="hl std">message</span>
+      <span class="hl std">),</span>
+      <span class="hl kwc">call.</span> <span class="hl std">=</span> <span class="hl num">FALSE</span>
+    <span class="hl std">)</span>
+  <span class="hl std">}</span>
+
+  <span class="hl kwd">structure</span><span class="hl std">(</span>
+    <span class="hl kwd">list</span><span class="hl std">(</span>
+      <span class="hl kwc">content</span> <span class="hl std">= parsed,</span>
+      <span class="hl kwc">path</span> <span class="hl std">= path,</span>
+      <span class="hl kwc">response</span> <span class="hl std">= resp</span>
+    <span class="hl std">),</span>
+    <span class="hl kwc">class</span> <span class="hl std">=</span> <span class="hl str">&quot;bitfinex_api&quot;</span>
+  <span class="hl std">)</span>
+<span class="hl std">}</span>
+
+
+
+
+<span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 9    #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl kwd">bitfinex_api</span><span class="hl std">(</span><span class="hl str">&quot;/v1/stats/btcusd&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## &lt;BitFinex /v1/stats/btcusd&gt;
+## List of 3
+##  $ :List of 2
+##   ..$ period: int 1
+##   ..$ volume: chr &quot;11051.16714243&quot;
+##  $ :List of 2
+##   ..$ period: int 7
+##   ..$ volume: chr &quot;66974.13441026&quot;
+##  $ :List of 2
+##   ..$ period: int 30
+##   ..$ volume: chr &quot;430862.25177487&quot;
+</pre></div>
+<div class="source"><pre class="knitr r"><span class="hl com">####################</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">#    Exercise 10   #</span>
+<span class="hl com">#                  #</span>
+<span class="hl com">####################</span>
+<span class="hl std">get_stats</span> <span class="hl kwb">&lt;-</span> <span class="hl kwa">function</span><span class="hl std">(</span><span class="hl kwc">symbol</span><span class="hl std">){</span>
+  <span class="hl std">path</span> <span class="hl kwb">&lt;-</span> <span class="hl kwd">paste0</span><span class="hl std">(</span><span class="hl str">&quot;/&quot;</span><span class="hl std">,</span><span class="hl kwd">paste</span><span class="hl std">(</span><span class="hl str">&quot;v1&quot;</span><span class="hl std">,</span><span class="hl str">&quot;stats&quot;</span><span class="hl std">,symbol,</span><span class="hl kwc">sep</span><span class="hl std">=</span><span class="hl str">&quot;/&quot;</span><span class="hl std">))</span>
+  <span class="hl kwd">bitfinex_api</span><span class="hl std">(path)</span>
+<span class="hl std">}</span>
+<span class="hl kwd">get_stats</span><span class="hl std">(</span><span class="hl str">&quot;BTCUSD&quot;</span><span class="hl std">)</span>
+</pre></div>
+<div class="output"><pre class="knitr r">## &lt;BitFinex /v1/stats/BTCUSD&gt;
+## List of 3
+##  $ :List of 2
+##   ..$ period: int 1
+##   ..$ volume: chr &quot;11051.16714243&quot;
+##  $ :List of 2
+##   ..$ period: int 7
+##   ..$ volume: chr &quot;66974.13441026&quot;
+##  $ :List of 2
+##   ..$ period: int 30
+##   ..$ volume: chr &quot;430862.25177487&quot;
+</pre></div>
+</div></div>

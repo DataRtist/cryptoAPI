@@ -1,0 +1,202 @@
+Below are the solutions to <a href="http://r-exercises.com/YEAR/MONTH/DAY/TITLE/">these</a> exercises on TOPIC.
+
+
+<!--begin.rcode, echo=TRUE, eval=TRUE, message=FALSE
+####################
+#                  #
+#    Exercise 1    #
+#                  #
+####################
+library(httr)
+path <- "/v1/pubticker/btcusd"
+url <- modify_url("https://api.bitfinex.com", path = path)
+resp <- GET(url)
+
+
+
+
+
+
+####################
+#                  #
+#    Exercise 2    #
+#                  #
+####################
+http_type(resp)
+
+
+
+
+####################
+#                  #
+#    Exercise 3    #
+#                  #
+####################
+parsed <- jsonlite::fromJSON(content(resp, "text"), simplifyVector = FALSE)
+parsed
+
+
+####################
+#                  #
+#    Exercise 4    #
+#                  #
+####################
+data <- structure(
+    list(
+      content = parsed,
+      path = path,
+      response = resp
+    ),
+    class = "bitfinex_api"
+  )
+data
+
+
+####################
+#                  #
+#    Exercise 5    #
+#                  #
+####################
+print.bitfinex_api <- function(x, ...) {
+  cat("<BitFinex ", x$path, ">\n", sep = "")
+  str(x$content)
+  invisible(x)
+}
+
+
+
+
+####################
+#                  #
+#    Exercise 6    #
+#                  #
+####################
+bitfinex_api <- function(path) {
+  url <- modify_url("https://api.bitfinex.com", path = path)
+  
+  resp <- GET(url)
+  if (http_type(resp) != "application/json") {
+    stop("API did not return json", call. = FALSE)
+  }
+  
+  parsed <- jsonlite::fromJSON(content(resp, "text"), simplifyVector = FALSE)
+  
+  structure(
+    list(
+      content = parsed,
+      path = path,
+      response = resp
+    ),
+    class = "bitfinex_api"
+  )
+}
+bitfinex_api("/v1/pubticker/btcusd")
+
+
+####################
+#                  #
+#    Exercise 7    #
+#                  #
+####################
+bitfinex_api("/v1/pubticker/btcusb")
+bitfinex_api <- function(path) {
+  url <- modify_url("https://api.bitfinex.com", path = path)
+  
+  resp <- GET(url)
+  if (http_type(resp) != "application/json") {
+    stop("API did not return json", call. = FALSE)
+  }
+  
+  parsed <- jsonlite::fromJSON(content(resp, "text"), simplifyVector = FALSE)
+  
+  if (http_error(resp)) {
+    stop(
+      sprintf(
+        "BitFinex API request failed [%s]\n%s", 
+        status_code(resp),
+        parsed$message
+      ),
+      call. = FALSE
+    )
+  }
+  
+  structure(
+    list(
+      content = parsed,
+      path = path,
+      response = resp
+    ),
+    class = "bitfinex_api"
+  )
+}
+bitfinex_api("/v1/pubticker/btcusb")
+
+
+
+
+####################
+#                  #
+#    Exercise 8    #
+#                  #
+####################
+ua <- user_agent("my_user_agent")
+ua
+
+
+bitfinex_api <- function(path) {
+  url <- modify_url("https://api.bitfinex.com", path = path)
+  
+  resp <- GET(url, ua)
+  if (http_type(resp) != "application/json") {
+    stop("API did not return json", call. = FALSE)
+  }
+  
+  parsed <- jsonlite::fromJSON(content(resp, "text"), simplifyVector = FALSE)
+  
+  if (status_code(resp) != 200) {
+    stop(
+      sprintf(
+        "BitFinex API request failed [%s]\n%s", 
+        status_code(resp),
+        parsed$message
+      ),
+      call. = FALSE
+    )
+  }
+  
+  structure(
+    list(
+      content = parsed,
+      path = path,
+      response = resp
+    ),
+    class = "bitfinex_api"
+  )
+}
+
+
+
+
+####################
+#                  #
+#    Exercise 9    #
+#                  #
+####################
+bitfinex_api("/v1/stats/btcusd")
+
+
+####################
+#                  #
+#    Exercise 10   #
+#                  #
+####################
+get_stats <- function(symbol){
+  path <- paste0("/",paste("v1","stats",symbol,sep="/"))
+  bitfinex_api(path)
+}
+get_stats("BTCUSD")
+
+
+
+
+end.rcode-->

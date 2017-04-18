@@ -1,0 +1,52 @@
+Tired of downloading data to csv and reloading it into R to do your analysis? Would you like to create a scalable application rather than just a script? Application Programming Interfaces are the industry standard for apps to communicate with each other on the internet. In this tutorial we will explore the Bitfinex API and gather some data on bitcoin and other cryptocurrencies.
+
+
+For this exercise, you’ll want to reference Bitfinex’s API documentation <a href="https://bitfinex.readme.io/v1/docs/public-endpoints">here</a> as well as Hadley Wikham’s <a href="https://cran.r-project.org/web/packages/httr/vignettes/api-packages.html">guide</a> for building API packages in R.
+
+
+Answers to the exercises are available <a href="http://r-exercises.com/YEAR/MONTH/DAY/TITLE/">here</a>.
+
+
+<strong>Exercise 1</strong>
+Retrieve the ticker for BTCUSD using a <code>GET</code> request to the BitFinex API (make sure to include <code>v1</code> in the request URL).
+
+
+<strong>Exercise 2</strong>
+Determine the type of response that you got.
+
+
+<strong>Exercise 3</strong>
+Parse the response using the <code>jsonlite</code> package.
+
+
+<strong>Exercise 4</strong>
+Create an <code>S3</code> object of the <code>bitfinex_api</code> class that includes the parsed content, the path, and the raw response from the API call.
+
+
+<strong>Exercise 5</strong>
+Create a <code>print</code> method for the <code>bitfinex_api</code> class that prints the path and the structure of the parsed data
+
+
+<strong>Exercise 6</strong>
+Combine exercises 1-4 into a function that retreives data from the API using a <code>GET</code> request, checks that it is formatted as JSON, and returns the parsed data as an <code>S3</code> object. Test this function by calling the BTCUSD ticker again.
+
+
+<strong>Exercise 7</strong>
+Try calling the BTCUSB ticker, which doesn’t exist. We want to know more about the error message, so adapt your <code>bitfinex_api()</code> function to handle the error and tell the user the error code and error message.
+
+
+<strong>Exercise 8</strong>
+Every API wrapper should specify a user agent to identify your application to the API that it’s accessing. Add a user agent string of your choice to the bitfinex_api function’s GET call.
+
+
+<strong>Exercise 9</strong>
+To ensure that our API wrapper is dynamic, test it out on the stats endpoint.
+
+
+<strong>Exercise 10</strong>
+Create a wrapper function called <code>get_stats(symbol)</code> that will return the stats for any symbol it is given.
+
+
+
+
+You’ve just created an R wrapper for the BitFinex API. Congratulations!
